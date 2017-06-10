@@ -1,4 +1,5 @@
 from TwitterAPI import TwitterAPI
+import time
 
 CONSUMER_KEY = 'zi4TunNmC22NABYXfKeamrzdO'
 CONSUMER_SECRET = 'VT9ZiDwdNd8NwNRIIy1OFdDADiRtWzoPveZSPpse3tnlEn8sPu'
@@ -16,13 +17,10 @@ r = api.request('statuses/filter', {'locations':'100,13,101,18', 'lang':'th'})
 for item in r:
     #print(item['created_at'] + item['text'] if 'text' in item else item)
 	try:
-		data = "created_at: "+item['created_at']+", text: "+item['text']+"\n"
+		data = "created_at : "+item['created_at'] + ", user's id : "+item.get('user').get('id_str') + ", lang : "+item['lang'] + ", text : "+item['text']+"\n"
+		#", location : " +item.get('user').get('location', 'no location') 
 		print(data)
 
-		paper = open("thaiTweets.csv","w") 
-		paper.write(data)
-		paper.close()
-
 	except BaseException as e:
-		print('failed ondata'+str(e))
-		time.sleep(5)
+		print('failed ondata '+str(e) +"\n")
+		#time.sleep(5)
