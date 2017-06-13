@@ -35,9 +35,9 @@ for item in r:
                                                                                                  
                 timezone = item.get('user').get('time_zone')
 
-                cursor.execute("INSERT INTO `twitterPJ`.`THTweetTopic` (`no`, `time`, `create_at`, `users_id`, `language`, `tweet`)"
+                cursor.execute("INSERT INTO `Twitter`.`THTweetTopic` (`no`, `datetime`, `create_at`, `users_id`, `language`, `tweet`)"
                         +" VALUES (NULL, CURRENT_TIMESTAMP," + "'" + createAt + "', '" + userID + "', '" + language + "', '"+tweet + "')")
-                print("insert leaw ja")
+                print("insert leaw ja"+'\n')
                 con.commit()
 
                 #", timezone : "+ timezone + 
