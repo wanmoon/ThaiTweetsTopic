@@ -1,3 +1,4 @@
+#coding: utf-8
 import mysql.connector
 from TwitterAPI import TwitterAPI
 import time
@@ -14,34 +15,43 @@ api = TwitterAPI(CONSUMER_KEY,
 
 r = api.request('statuses/filter', {'locations':'100,13,101,18', 'lang':'th'})
 
-con = mysql.connector.connect(user='root', password='root',
+con = mysql.connector.connect(user='root', password='DmA3@AF3',
                               host='localhost',
-                              database='twitterPJ',
-                              port='8889')
+                              port='3306',
+                              database='twitterPJ')
 
-print("can connect to db") #ต่อได้แล้วจ้า
+print("can connect to db")
 
 #create cursor
 cursor = con.cursor()
 
 for item in r:
-	#print(item['created_at'] + item['text'] if 'text' in item else item)
-	try:
-		cursor.execute("INSERT INTO `twitterPJ`.`THTweetTopic` (`no`, `create_at`, `users_id`, `language`, `tweet`) VALUES (NULL," + "'" + item['created_at'] + "', '" + item.get('user').get('id_str') + "', '" + item['lang'] + "', '" + item['text'] + "')")
-		print("insert leaw ja")
-		con.commit()
+        #print(item['created_at'] + item['text'] if 'text' in item else item)
+        try:
+                createAt = item['created_at']
+                userID = item.get('user').get('id_str')
+                language = item['lang']
+                tweet = item['text']
+                                                                                                 
+                timezone = item.get('user').get('time_zone')
 
-		data = "created_at : "+item['created_at'] + ", user's id : "+item.get('user').get('id_str') + ", lang : "+item['lang'] + ", text : "+item['text']+"\n"
-		print(data)
+                cursor.execute("INSERT INTO `twitterPJ`.`THTweetTopic` (`no`, `time`, `create_at`, `users_id`, `language`, `tweet`)"
+                        +" VALUES (NULL, CURRENT_TIMESTAMP," + "'" + createAt + "', '" + userID + "', '" + language + "', '"+tweet + "')")
+                print("insert leaw ja")
+                con.commit()
 
-	except BaseException as e:
-		print('failed ondata '+str(e) +'\n')
-		time.sleep(5)
+                #", timezone : "+ timezone + 
+                data = "created_at : "+ createAt + ", user's id : "+ userID + ", lang : "+ language + ", text : "+ tweet +"\n"
+                print(data)
 
-#“+ item['created_at'] +”
-#“+ item.get('user').get('id_str') +”
-#“+ item['lang'] +”
-#“+ item['text'] +”
+        except BaseException as e:
+                print('failed ondata '+str(e) +'\n')
+                time.sleep(5)
+
+#?~@~\+ item['created_at'] +?~@~]
+#?~@~\+ item.get('user').get('id_str') +?~@~]
+#?~@~\+ item['lang'] +?~@~]
+#?~@~\+ item['text'] +?~@~]
 
 cursor.close()
 con.close()
