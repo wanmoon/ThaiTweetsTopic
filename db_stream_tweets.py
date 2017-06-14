@@ -1,4 +1,4 @@
-#coding: utf-8
+# -*- coding: utf-8-*-
 import mysql.connector
 from TwitterAPI import TwitterAPI
 import time
@@ -25,28 +25,37 @@ print("can connect to db")
 #create cursor
 cursor = con.cursor()
 
-for item in r:
-        #print(item['created_at'] + item['text'] if 'text' in item else item)
-        try:
-                createAt = item['created_at']
-                userID = item.get('user').get('id_str')
-                language = item['lang']
-                tweet = item['text']
-                                                                                                 
-                timezone = item.get('user').get('time_zone')
+# Enforce UTF-8 for the connection.
+cursor.execute('SET NAMES utf8mb4')
+cursor.execute("SET CHARACTER SET utf8mb4")
+cursor.execute("SET character_set_connection=utf8mb4")
 
-                cursor.execute("INSERT INTO `Twitter`.`THTweetTopic` (`no`, `datetime`, `create_at`, `users_id`, `language`, `tweet`)"
-                        +" VALUES (NULL, CURRENT_TIMESTAMP," + "'" + createAt + "', '" + userID + "', '" + language + "', '"+tweet + "')")
-                print("insert leaw ja"+'\n')
-                con.commit()
+def run():
+        for item in r:
+                #print(item['created_at'] + item['text'] if 'text' in item else item)
+                try:
+                        createAt = item['created_at']
+                        userID = item.get('user').get('id_str')
+                        language = item['lang']
+                        tweet = item['text']
 
-                #", timezone : "+ timezone + 
-                data = "created_at : "+ createAt + ", user's id : "+ userID + ", lang : "+ language + ", text : "+ tweet +"\n"
-                print(data)
+                        timezone = item.get('user').get('time_zone')
 
-        except BaseException as e:
-                print('failed ondata '+str(e) +'\n')
-                time.sleep(5)
+                        cursor.execute("INSERT INTO `Twitter`.`THTweetTopic` (`no`, `datetime`, `create_at`, `users_id`, `language`, `tweet`)"+" VALUES (NULL, CURRENT_TIMESTAMP," + "'" + createAt + "', '" + userID + "', '" + language + "', '"+tweet + "')")
+                        print("insert leaw ja"+'\n')
+                        con.commit()
+
+                        #", timezone : "+ timezone + 
+                        #data = "created_at : "+ createAt + ", user's id : "+ userID + ", lang : "+ language + ", text : "+ tweet +"\n"
+                        #print(data)
+
+                except BaseException as e:
+                        print('failed ondata '+str(e) +'\n')
+                        time.sleep(5)
+
+                except :
+                        continue
+run()
 
 #?~@~\+ item['created_at'] +?~@~]
 #?~@~\+ item.get('user').get('id_str') +?~@~]
